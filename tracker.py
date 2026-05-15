@@ -31,6 +31,7 @@ PRODUCTS = [
 
 EMAIL_ADDRESS = os.environ.get("EMAIL_USER")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASS")
+SCRAPER_API_KEY = os.environ.get("SCRAPER_API_KEY")
 
 def check_prices():
     headers = {
@@ -41,7 +42,9 @@ def check_prices():
     for item in PRODUCTS:
         print(f"Checking price for: {item['name']}")
         try:
-            response = requests.get(item['url'], headers=headers)
+            # Route the request through ScraperAPI to bypass blocks
+            api_url = f"http://api.scraperapi.com?api_key={SCRAPER_API_KEY}&url={item['url']}"
+            response = requests.get(api_url)
             soup = BeautifulSoup(response.content, "html.parser")
 
             # Flipkart's price class
